@@ -191,7 +191,7 @@
 </details>
 
 <details> 
-  <summary>Floyd-Warshall Algorithm</summary>
+  <summary>Floyd-Warshall Algorithm (Positive/Negative Edges)</summary>
 
   ### Floyd-Warshall Algorithm
 
@@ -219,6 +219,38 @@
     
     return dist;
   }
+  ```
+</details>
+
+<details> 
+  <summary>Bellman Ford Algorithm (Path to every other vertex)</summary>
+
+  ### Bellman Ford Algorithm
+
+  Find the shortest paths from a single source vertex to all other vertices in a weighted graph, handling negative weights.
+
+  ```javascript
+  function bellmanFord(graph, source) {
+    const distances = Array(graph.length).fill(Infinity);
+    distances[source] = 0;
+
+    for (let i = 1; i < graph.length - 1; i++) {
+        for (const [u, v, weight] of graph) {
+            if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
+                distances[v] = distances[u] + weight;
+            }
+        }
+    }
+
+    for (const [u, v, weight] of graph) {
+        if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
+            throw new Error("Graph contains a negative-weight cycle");
+        }
+    }
+
+    return distances;
+  }
+
   ```
 </details>
 
@@ -269,6 +301,53 @@
   const pattern = "abc"
   const str = "ababc"
   zFunction(pattern + '#' + str);
+  ```
+</details>
+
+
+<details>
+  <summary>Manacher's Algorithm (Longest Palindromic substring)</summary>
+  
+  ### Manacher's Algorithm
+  
+  This algorithm is used to find the longest palindromic substring in a given string in linear time.
+  
+  ```javascript
+  function manacher(s) {
+    const modifiedStr = `#${s.split('').join('#')}#`;
+    const n = modifiedStr.length;
+    const p = Array(n).fill(0);
+    let center = 0, right = 0;
+
+    for (let i = 0; i < n; i++) {
+        if (i < right) {
+            p[i] = Math.min(right - i, p[2 * center - i]);
+        }
+        let a = i + (1 + p[i]);
+        let b = i - (1 + p[i]);
+
+        while (a < n && b >= 0 && modifiedStr[a] === modifiedStr[b]) {
+            p[i]++;
+            a++;
+            b--;
+        }
+
+        if (i + p[i] > right) {
+            center = i;
+            right = i + p[i];
+        }
+    }
+
+    let maxLength = 0, centerIndex = 0;
+    for (let i = 0; i < n; i++) {
+        if (p[i] > maxLength) {
+            maxLength = p[i];
+            centerIndex = i;
+        }
+    }
+
+    return s.substring(Math.floor((centerIndex - maxLength) / 2), Math.floor((centerIndex + maxLength) / 2));
+  }
   ```
 </details>
 
@@ -488,5 +567,316 @@
       
       return result;
   }
+  ```
+</details>
+
+
+## Useful Classes
+<details> 
+  <summary>Union Find</summary>
+
+  ### Union Find
+
+  The Union-Find algorithm, also known as Disjoint Set Union (DSU), is a data structure that keeps track of a partition of a set into disjoint (non-overlapping) subsets
+
+  ```javascript
+      class UnionFind {
+        constructor(size) {
+            // Initialize the parent array, rank and size array
+            this.parent = Array.from({ length: size }, (_, index) => index);
+            this.rank = Array(size).fill(1);
+            this.size = Array(size).fill(1);
+        }
+    
+        // Find method with path compression
+        find(p) {
+            if (this.parent[p] !== p) {
+                this.parent[p] = this.find(this.parent[p]); // Path compression
+            }
+            return this.parent[p];
+        }
+    
+        // Union method with union by rank
+        union(p, q) {
+            const rootP = this.find(p);
+            const rootQ = this.find(q);
+    
+            if (rootP === rootQ) return; // They are already in the same set
+    
+            // Union by rank
+            if (this.rank[rootP] > this.rank[rootQ]) {
+                this.parent[rootQ] = rootP;
+                this.size[rootP] += this.size[rootQ];
+    
+            } else if (this.rank[rootP] < this.rank[rootQ]) {
+                this.parent[rootP] = rootQ;
+                this.size[rootQ] += this.size[rootP];
+                
+            } else {
+                this.parent[rootQ] = rootP;
+                this.size[rootP] += this.size[rootQ];
+                this.rank[rootP] += 1; // Increment rank if they are of the same rank
+            }
+        }
+    
+        // Check if two elements are in the same set
+        connected(p, q) {
+            return this.find(p) === this.find(q);
+        }
+    
+        // Return the maximum size of the set
+        largestSetSize() {
+            let maxSize = 0;
+            for (const i in this.parent) {
+                if (this.parent[i] == i) {
+                    maxSize = Math.max(maxSize, this.size[i])
+                }
+            }
+            return maxSize;
+        }
+    }
+
+    // Example usage
+    const uf = new UnionFind(10);
+    uf.union(1, 2);
+    uf.union(2, 3);
+    console.log(uf.find(1)); // Output: 3 (or 1, depending on the union operation)
+    console.log(uf.connected(1, 3)); // Output: true
+    console.log(uf.connected(1, 4)); // Output: false
+  ```
+</details>
+
+<details> 
+  <summary>Trie</summary>
+
+  ### Trie
+
+  The Trie data structure is a tree-like data structure used for storing a dynamic set of strings
+
+  ```javascript
+    class TrieNode {
+        constructor() {
+            this.children = {};
+            this.isEndOfWord = false;
+        }
+    }
+    
+    class Trie {
+        constructor() {
+            this.root = new TrieNode();
+        }
+    
+        // Insert a word into the Trie
+        insert(word) {
+            let currentNode = this.root;
+            for (let char of word) {
+                if (!currentNode.children[char]) {
+                    currentNode.children[char] = new TrieNode();
+                }
+                currentNode = currentNode.children[char];
+            }
+            currentNode.isEndOfWord = true;
+        }
+    
+        // Search for a word in the Trie
+        search(word) {
+            let currentNode = this.root;
+            for (let char of word) {
+                if (!currentNode.children[char]) {
+                    return false;
+                }
+                currentNode = currentNode.children[char];
+            }
+            return currentNode.isEndOfWord;
+        }
+    
+        // Check if there is any word in the Trie that starts with the given prefix
+        startsWith(prefix) {
+            let currentNode = this.root;
+            for (let char of prefix) {
+                if (!currentNode.children[char]) {
+                    return false;
+                }
+                currentNode = currentNode.children[char];
+            }
+            return true;
+        }
+    }
+  ```
+</details>
+
+<details> 
+  <summary>Priority Queue (Heaps)</summary>
+
+  A priority queue is a data structure where each element has a priority, and elements with higher priority are dequeued before elements with lower priority.
+
+  ### Min Heap
+
+  The element with the lowest priority (smallest value) is always at the root and is dequeued first.
+
+  ```javascript
+    class MinHeap {
+        constructor() {
+            this.heap = [];
+        }
+    
+        // Helper method to swap elements at two indices
+        swap(i, j) {
+            [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+        }
+    
+        // Insert a new element into the heap
+        insert(val) {
+            this.heap.push(val);
+            this.bubbleUp();
+        }
+    
+        // Bubble up the last element to maintain the heap property
+        bubbleUp() {
+            let index = this.heap.length - 1;
+            while (index > 0) {
+                let parentIndex = Math.floor((index - 1) / 2);
+                if (this.heap[parentIndex] <= this.heap[index]) break;  // Parent is smaller, heap property is satisfied
+                this.swap(index, parentIndex);
+                index = parentIndex;
+            }
+        }
+    
+        // Extract the minimum element (root) from the heap
+        extractMin() {
+            if (this.heap.length === 0) return null;
+            if (this.heap.length === 1) return this.heap.pop();
+    
+            const min = this.heap[0];
+            this.heap[0] = this.heap.pop();  // Move the last element to the root
+            this.bubbleDown();
+            return min;
+        }
+    
+        // Bubble down the root element to maintain the heap property
+        bubbleDown() {
+            let index = 0;
+            const length = this.heap.length;
+            const element = this.heap[0];
+    
+            while (true) {
+                let leftChildIndex = 2 * index + 1;
+                let rightChildIndex = 2 * index + 2;
+                let leftChild, rightChild;
+                let swapIndex = null;
+    
+                if (leftChildIndex < length) {
+                    leftChild = this.heap[leftChildIndex];
+                    if (leftChild < element) {
+                        swapIndex = leftChildIndex;
+                    }
+                }
+    
+                if (rightChildIndex < length) {
+                    rightChild = this.heap[rightChildIndex];
+                    if (
+                        (swapIndex === null && rightChild < element) ||
+                        (swapIndex !== null && rightChild < leftChild)
+                    ) {
+                        swapIndex = rightChildIndex;
+                    }
+                }
+    
+                if (swapIndex === null) break;  // No more swaps needed
+                this.swap(index, swapIndex);
+                index = swapIndex;
+            }
+        }
+    
+        // Peek at the minimum element (root) without removing it
+        peek() {
+            return this.heap[0];
+        }
+    }
+  ```
+
+  ### Max Heap
+
+  The element with the highest priority (largest value) is at the root and dequeued first.
+
+  ```javascript
+    class MaxHeap {
+        constructor() {
+            this.heap = [];
+        }
+    
+        // Helper method to swap elements at two indices
+        swap(i, j) {
+            [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+        }
+    
+        // Insert a new element into the heap
+        insert(val) {
+            this.heap.push(val);
+            this.bubbleUp();
+        }
+    
+        // Bubble up the last element to maintain the heap property
+        bubbleUp() {
+            let index = this.heap.length - 1;
+            while (index > 0) {
+                let parentIndex = Math.floor((index - 1) / 2);
+                if (this.heap[parentIndex] >= this.heap[index]) break;  // Parent is larger, heap property is satisfied
+                this.swap(index, parentIndex);
+                index = parentIndex;
+            }
+        }
+    
+        // Extract the maximum element (root) from the heap
+        extractMax() {
+            if (this.heap.length === 0) return null;
+            if (this.heap.length === 1) return this.heap.pop();
+    
+            const max = this.heap[0];
+            this.heap[0] = this.heap.pop();  // Move the last element to the root
+            this.bubbleDown();
+            return max;
+        }
+    
+        // Bubble down the root element to maintain the heap property
+        bubbleDown() {
+            let index = 0;
+            const length = this.heap.length;
+            const element = this.heap[0];
+    
+            while (true) {
+                let leftChildIndex = 2 * index + 1;
+                let rightChildIndex = 2 * index + 2;
+                let leftChild, rightChild;
+                let swapIndex = null;
+    
+                if (leftChildIndex < length) {
+                    leftChild = this.heap[leftChildIndex];
+                    if (leftChild > element) {
+                        swapIndex = leftChildIndex;
+                    }
+                }
+    
+                if (rightChildIndex < length) {
+                    rightChild = this.heap[rightChildIndex];
+                    if (
+                        (swapIndex === null && rightChild > element) ||
+                        (swapIndex !== null && rightChild > leftChild)
+                    ) {
+                        swapIndex = rightChildIndex;
+                    }
+                }
+    
+                if (swapIndex === null) break;  // No more swaps needed
+                this.swap(index, swapIndex);
+                index = swapIndex;
+            }
+        }
+    
+        // Peek at the maximum element (root) without removing it
+        peek() {
+            return this.heap[0];
+        }
+    }
   ```
 </details>
