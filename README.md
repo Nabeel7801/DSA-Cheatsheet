@@ -1,3 +1,67 @@
+## Sorting
+<details>
+  <summary>Merge Sort</summary>
+    
+  ### Merge Sort
+  
+  An efficient, stable, divide and conquer sorting algorithm.
+    
+  ```javascript
+    function mergeSort(arr) {
+        if (arr.length <= 1) return arr;
+        
+        const mid = Math.floor(arr.length / 2);
+        const left = mergeSort(arr.slice(0, mid));
+        const right = mergeSort(arr.slice(mid));
+        
+        return merge(left, right);
+    }
+    
+    function merge(left, right) {
+        let result = [];
+        let i = 0, j = 0;
+        
+        while (i < left.length && j < right.length) {
+            if (left[i] < right[j]) {
+                result.push(left[i++]);
+            } else {
+                result.push(right[j++]);
+            }
+        }
+        
+        return result.concat(left.slice(i)).concat(right.slice(j));
+    }
+  ```
+</details>
+
+<details>
+  <summary>Quick Sort</summary>
+    
+  ### Quick Sort
+  
+  An algorithm to find the maximum sum of a contiguous subarray.
+    
+  ```javascript
+    function quickSort(arr) {
+        if (arr.length <= 1) return arr;
+        
+        const pivot = arr[arr.length - 1];
+        const left = [], right = [];
+        
+        for (let i = 0; i < arr.length - 1; i++) {
+            if (arr[i] < pivot) {
+                left.push(arr[i]);
+            } else {
+                right.push(arr[i]);
+            }
+        }
+        
+        return [...quickSort(left), pivot, ...quickSort(right)];
+    }
+  ```
+</details>
+
+
 ## Searching
 <details>
   <summary>Binary Search</summary>
@@ -82,66 +146,79 @@
 </details>
 
 
-## Sorting
-<details>
-  <summary>Merge Sort</summary>
-    
-  ### Merge Sort
-  
-  An efficient, stable, divide and conquer sorting algorithm.
-    
+## Shortest Path
+<details> 
+  <summary>Dijkstra’s Algorithm</summary>
+
+  ### Dijkstra’s Algorithm
+
+  An algorithm for finding the shortest paths between nodes in a graph, which may represent, for example, road networks.
+
   ```javascript
-    function mergeSort(arr) {
-        if (arr.length <= 1) return arr;
+    const graph = [];
+    function dijkstra(start) {
+        let distances = {};
+        let visited = new Set();
         
-        const mid = Math.floor(arr.length / 2);
-        const left = mergeSort(arr.slice(0, mid));
-        const right = mergeSort(arr.slice(mid));
+        for (let node in graph) {
+            distances[node] = Infinity;
+        }
+        distances[start] = 0;
         
-        return merge(left, right);
-    }
-    
-    function merge(left, right) {
-        let result = [];
-        let i = 0, j = 0;
-        
-        while (i < left.length && j < right.length) {
-            if (left[i] < right[j]) {
-                result.push(left[i++]);
-            } else {
-                result.push(right[j++]);
+        while (visited.size !== Object.keys(graph).length) {
+            let closestNode = null;
+            for (let node in distances) {
+                if (!visited.has(node)) {
+                    if (closestNode === null || distances[node] < distances[closestNode]) {
+                        closestNode = node;
+                    }
+                }
+            }
+            
+            visited.add(closestNode);
+            
+            for (let neighbor in graph[closestNode]) {
+                let newDist = distances[closestNode] + graph[closestNode][neighbor];
+                if (newDist < distances[neighbor]) {
+                    distances[neighbor] = newDist;
+                }
             }
         }
         
-        return result.concat(left.slice(i)).concat(right.slice(j));
+        return distances;
     }
   ```
 </details>
 
-<details>
-  <summary>Quick Sort</summary>
-    
-  ### Quick Sort
-  
-  An algorithm to find the maximum sum of a contiguous subarray.
-    
+<details> 
+  <summary>Floyd-Warshall Algorithm</summary>
+
+  ### Floyd-Warshall Algorithm
+
+  A dynamic programming algorithm for finding shortest paths in a weighted graph with positive or negative edge weights.
+
   ```javascript
-    function quickSort(arr) {
-        if (arr.length <= 1) return arr;
-        
-        const pivot = arr[arr.length - 1];
-        const left = [], right = [];
-        
-        for (let i = 0; i < arr.length - 1; i++) {
-            if (arr[i] < pivot) {
-                left.push(arr[i]);
-            } else {
-                right.push(arr[i]);
+  function floydWarshall(graph) {
+    let dist = [];
+    const V = graph.length;
+    
+    for (let i = 0; i < V; i++) {
+        dist[i] = [];
+        for (let j = 0; j < V; j++) {
+            dist[i][j] = graph[i][j];
+        }
+    }
+    
+    for (let k = 0; k < V; k++) {
+        for (let i = 0; i < V; i++) {
+            for (let j = 0; j < V; j++) {
+                dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
             }
         }
-        
-        return [...quickSort(left), pivot, ...quickSort(right)];
     }
+    
+    return dist;
+  }
   ```
 </details>
 
