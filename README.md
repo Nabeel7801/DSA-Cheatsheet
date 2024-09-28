@@ -1,3 +1,7 @@
+# Cheat sheet for DSA - Leetcode competitions
+Here's a cheat sheet for Data Structures and Algorithms (DSA) that can help you excel in Leetcode competitions. This collection includes essential algorithms such as sorting, searching, dynamic programming, and graph traversal, all with efficient time complexities to tackle competitive programming challenges. Each algorithm is provided with a clear and concise JavaScript implementation, allowing you to quickly refer to them during contests. Whether you're solving problems related to arrays, strings, trees, or graphs, having these ready-to-use snippets can boost your speed and accuracy.
+
+
 ## Sorting
 <details>
   <summary>Merge Sort</summary>
