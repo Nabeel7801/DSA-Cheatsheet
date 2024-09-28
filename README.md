@@ -229,10 +229,9 @@
 
   ### KMP Pattern Matching (Prefix Function)
 
-  Efficient string searching algorithm (Knuth-Morris-Pratt).
+  Efficient string searching algorithm (Knuth-Morris-Pratt). Find the length of the longest proper prefix of the substring which is also a suffix of this substring
 
   ```javascript
-  Copy code
   function kmpPrefixFunction(s) {
       const prefix = Array(s.length).fill(0);
       for (let i = 1, j = 0; i < s.length; i++) {
@@ -242,6 +241,9 @@
       }
       return prefix;
   }
+
+  const str = "ababcab"
+  kmpPrefixFunction(str);
   ```
 </details>
 
@@ -263,6 +265,10 @@
       }
       return Z;
   }
+
+  const pattern = "abc"
+  const str = "ababc"
+  zFunction(pattern + '#' + str);
   ```
 </details>
 
@@ -341,7 +347,6 @@
   Finds the modular inverse of a under modulo m when m is prime.
 
   ```javascript
-  Copy code
   function modInverse(a, m) {
       return modPow(a, m - 2, m); // Using Fermat's Little Theorem
   }
@@ -384,7 +389,6 @@
   Calculates the number of combinations (n choose r).
 
   ```javascript
-  Copy code
   function nCr(n, r) {
       if (r > n) return 0;
       let res = 1;
@@ -456,7 +460,6 @@
   Efficiently calculates base^exp.
 
   ```javascript
-  Copy code
   function power(base, exp) {
       if (exp === 0) return 1;
       const half = power(base, Math.floor(exp / 2));
@@ -473,7 +476,6 @@
   Computes (base^exp) % mod using efficient binary exponentiation.
 
   ```javascript
-  Copy code
   function modPow(base, exp, mod) {
       let result = 1;
       base = base % mod;
