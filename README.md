@@ -1,27 +1,152 @@
+## Searching
 <details>
-  <summary>Kadane’s Algorithm (Maximum Subarray Problem)</summary>
+  <summary>Binary Search</summary>
     
-  ### Kadane’s Algorithm (Maximum Subarray Problem)
+  ### Binary Search
   
-  An algorithm to find the maximum sum of a contiguous subarray.
+  A divide and conquer algorithm to find the position of an element in a sorted array.
     
   ```javascript
-     function maxSubArray(arr) {
-        let maxCurrent = arr[0];
-        let maxGlobal = arr[0];
+   function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+    
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
         
-        for (let i = 1; i < arr.length; i++) {
-            maxCurrent = Math.max(arr[i], maxCurrent + arr[i]);
-            if (maxCurrent > maxGlobal) {
-                maxGlobal = maxCurrent;
-            }
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
         }
+    }
+    
+    return -1; // Target not found
+  }
+  ```
+</details>
+
+<details>
+  <summary>Depth First Search (DFS)</summary>
+    
+  ### Depth First Search (DFS)
+  
+  A graph traversal algorithm that explores as far as possible along each branch before backtracking.
+    
+  ```javascript
+    const graph = [];
+    const visited = new Set();
+    
+    function dfs(index) {
+        if (visited.has(index));
+        visited.add(index);
         
-        return maxGlobal;
+        graph[index].forEach((neighbor) => {
+            if (!visited.has(neighbor)) {
+                dfs(neighbor);
+            }
+        });
     }
   ```
 </details>
 
+<details>
+  <summary>Breadth First Search (BFS)</summary>
+    
+  ### Breadth First Search (BFS)
+  
+  A graph traversal algorithm that explores all the neighbors at the present depth before moving on to nodes at the next depth level.
+    
+  ```javascript
+    const graph = [];
+    function bfs(index) {
+        let queue = [index];
+    
+        let visited = new Set();
+        visited.add(index);
+        
+        while (queue.length > 0) {
+            let node = queue.shift();
+            
+            graph[node].forEach((neighbor) => {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            });
+        }
+    }
+  ```
+</details>
+
+
+## Sorting
+<details>
+  <summary>Merge Sort</summary>
+    
+  ### Merge Sort
+  
+  An efficient, stable, divide and conquer sorting algorithm.
+    
+  ```javascript
+    function mergeSort(arr) {
+        if (arr.length <= 1) return arr;
+        
+        const mid = Math.floor(arr.length / 2);
+        const left = mergeSort(arr.slice(0, mid));
+        const right = mergeSort(arr.slice(mid));
+        
+        return merge(left, right);
+    }
+    
+    function merge(left, right) {
+        let result = [];
+        let i = 0, j = 0;
+        
+        while (i < left.length && j < right.length) {
+            if (left[i] < right[j]) {
+                result.push(left[i++]);
+            } else {
+                result.push(right[j++]);
+            }
+        }
+        
+        return result.concat(left.slice(i)).concat(right.slice(j));
+    }
+  ```
+</details>
+
+<details>
+  <summary>Quick Sort</summary>
+    
+  ### Quick Sort
+  
+  An algorithm to find the maximum sum of a contiguous subarray.
+    
+  ```javascript
+    function quickSort(arr) {
+        if (arr.length <= 1) return arr;
+        
+        const pivot = arr[arr.length - 1];
+        const left = [], right = [];
+        
+        for (let i = 0; i < arr.length - 1; i++) {
+            if (arr[i] < pivot) {
+                left.push(arr[i]);
+            } else {
+                right.push(arr[i]);
+            }
+        }
+        
+        return [...quickSort(left), pivot, ...quickSort(right)];
+    }
+  ```
+</details>
+
+
+## Strings
 <details> 
   <summary>KMP Pattern Matching (Prefix Function)</summary>
 
@@ -64,6 +189,48 @@
   ```
 </details>
 
+
+## Sums
+<details>
+  <summary>Kadane’s Algorithm (Maximum Subarray Problem)</summary>
+    
+  ### Kadane’s Algorithm (Maximum Subarray Problem)
+  
+  An algorithm to find the maximum sum of a contiguous subarray.
+    
+  ```javascript
+     function maxSubArray(arr) {
+        let maxCurrent = arr[0];
+        let maxGlobal = arr[0];
+        
+        for (let i = 1; i < arr.length; i++) {
+            maxCurrent = Math.max(arr[i], maxCurrent + arr[i]);
+            if (maxCurrent > maxGlobal) {
+                maxGlobal = maxCurrent;
+            }
+        }
+        
+        return maxGlobal;
+    }
+  ```
+</details>
+
+<details> 
+  <summary>Sum of Digits</summary>
+
+  ### Sum of Digits
+
+  Finds the sum of digits of a given number.
+
+  ```javascript
+  function sumOfDigits(n) {
+      return n.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+  }
+  ```
+</details>
+
+
+## Math
 <details> 
   <summary>Sieve of Eratosthenes (Finding All Primes Up to N)</summary>
 
@@ -131,6 +298,27 @@
   }
   ```
 </details> 
+
+<details> 
+  <summary>nCr (Combinations)</summary>
+
+  ### nCr (Combinations)
+
+  Calculates the number of combinations (n choose r).
+
+  ```javascript
+  Copy code
+  function nCr(n, r) {
+      if (r > n) return 0;
+      let res = 1;
+      for (let i = 0; i < r; i++) {
+          res *= (n - i);
+          res /= (i + 1);
+      }
+      return res;
+  }
+  ```
+</details>
 
 <details> 
   <summary>Factorial</summary>
@@ -223,39 +411,3 @@
   }
   ```
 </details>
-
-<details> 
-  <summary>Sum of Digits</summary>
-
-  ### Sum of Digits
-
-  Finds the sum of digits of a given number.
-
-  ```javascript
-  function sumOfDigits(n) {
-      return n.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
-  }
-  ```
-</details>
-
-<details> 
-  <summary>nCr (Combinations)</summary>
-
-  ### nCr (Combinations)
-
-  Calculates the number of combinations (n choose r).
-
-  ```javascript
-  Copy code
-  function nCr(n, r) {
-      if (r > n) return 0;
-      let res = 1;
-      for (let i = 0; i < r; i++) {
-          res *= (n - i);
-          res /= (i + 1);
-      }
-      return res;
-  }
-  ```
-</details>
-
