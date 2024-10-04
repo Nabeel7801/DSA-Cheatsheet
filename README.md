@@ -545,8 +545,10 @@ Here's a cheat sheet for Data Structures and Algorithms (DSA) that can help you 
   ```javascript
   function power(base, exp) {
       if (exp === 0) return 1;
-      const half = power(base, Math.floor(exp / 2));
-      return exp % 2 === 0 ? half * half : half * half * base;
+      const pow = Math.abs(exp);
+      const half = power(base*base, Math.floor(pow / 2));
+      const result = half * (exp % 2 === 0 ? 1 : base);
+      return exp < 0 ? 1 / result : result;
   }
   ```
 </details>
