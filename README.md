@@ -707,6 +707,33 @@ Here's a cheat sheet for Data Structures and Algorithms (DSA) that can help you 
             }
             return true;
         }
+
+        // Remove a word from the Trie
+        remove(word) {
+            const removeHelper = (node, word, depth) => {
+                if (depth === word.length) {
+                    if (!node.isEndOfWord) return false;
+                    node.isEndOfWord = false;
+    
+                    return Object.keys(node.children).length === 0;
+                }
+    
+                const char = word[depth];
+                const childNode = node.children[char];
+                if (!childNode) return false;
+    
+                const shouldDeleteChild = removeHelper(childNode, word, depth + 1);
+                if (shouldDeleteChild) {
+                    delete node.children[char];
+    
+                    return Object.keys(node.children).length === 0 && !node.isEndOfWord;
+                }
+    
+                return false;
+            };
+    
+            removeHelper(this.root, word, 0);
+        }
     }
   ```
 </details>
