@@ -423,6 +423,88 @@ Here's a cheat sheet for Data Structures and Algorithms (DSA) that can help you 
 </details>
 
 <details> 
+  <summary>Modified Sieve (Finding GCD of all Pairs in Array)</summary>
+
+  ### Modified Sieve (Finding GCD of all Pairs in Array)
+
+  An efficient algorithm to find gcd all pairs in Array.
+
+  ```javascript
+  function gcdOfAllPairs(arr) {
+
+    const maxA = Math.max(...arr);
+    
+    // Frequency array to store the count of each number in the array
+    const freq = new Array(maxA + 1).fill(0);
+    arr.forEach(num => freq[num]++);
+
+    // Accumulate the counts of multiples of each number
+    for (let i = 1; i <= maxA; i++) {
+        for (let j = 2 * i; j <= maxA; j += i) {
+            freq[i] += freq[j];
+        }
+    }
+
+    // Calculate the combinations of pairs (choose 2) for each number's count
+    for (let i = 1; i <= maxA; i++) {
+        freq[i] = (freq[i] + 1) * freq[i] / 2;
+    }
+
+    // Remove over-counting by subtracting the sums of multiples
+    for (let i = Math.floor(maxA / 2); i >= 1; i--) {
+        for (let j = 2 * i; j <= maxA; j += i) {
+            freq[i] -= freq[j];
+        }
+    }
+
+    // Adjust counts to remove the original occurrences of each number
+    for (let x of arr) {
+        freq[x]--;
+    }
+
+    return freq;
+}
+
+var gcdValues = function(nums, queries) {
+    const pairs = gcdOfAllPairs(nums);
+
+    const n = pairs.length;
+    const MAX_NUM = 50000;
+
+    for (let i = 2; i < n; i++) {
+        pairs[i] += pairs[i - 1];
+    }
+
+    for (let i = n; i <= MAX_NUM; i++) {
+        pairs[i] = pairs[i-1];
+    }
+
+    // Binary search
+    let res = [];
+    for (let q of queries) {
+        q++;
+
+        let left = 1, right = MAX_NUM;
+        let ans = -1;
+        while (left <= right) {
+            const mid = Math.floor((left + right) / 2);
+            if (pairs[mid] >= q) {
+                ans = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        res.push(ans);
+    }
+
+    return res;
+};
+  ```
+</details>
+
+<details> 
   <summary>Modular Inverse (Fermat's Little Theorem)</summary>
 
   ### Modular Inverse (Fermat's Little Theorem)
